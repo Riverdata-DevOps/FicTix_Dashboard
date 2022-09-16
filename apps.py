@@ -11,10 +11,10 @@ def Home():
     df['date'] = df.Data.dt.date
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric('Sensor1', df[df.Sensor=='v10'].Contagem.sum())
-    c2.metric('Sensor2', df[df.Sensor=='v11'].Contagem.sum())
-    c3.metric('Sensor3', df[df.Sensor=='v13'].Contagem.sum())
-    c4.metric('Contagem de Pessoas Total', df.Contagem.sum())
+    c1.metric('Dia com Maior Movimentação Média', df.groupby('weekday').Contagem.mean().reset_index().sort_values(by='Contagem', ascending=False).weekday[1])
+    c2.metric('Dia com Maior Pico de Movimentação', df.weekday.mode()[0])
+    c3.metric('Movimentação Média por Dia', int(df.Contagem.std()))
+    c4.metric('Movimentação Média por Semana', int(df.Contagem.max()))
     bar = px.bar(pd.DataFrame(df.groupby(['Data', 'Sensor']).Contagem.sum().reset_index()), x='Data', y = 'Contagem', title='Evolução da Movimentação nos Totens', height = 550)
     bar.update_traces(
                       marker_line_width = 0,
